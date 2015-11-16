@@ -41,6 +41,12 @@
 			#webpack p, #webpack li {
 				color: #666;
 			}
+			#beyond-jsx h1 {
+				color: #fff;
+			}
+			#beyond-jsx p, #beyond-jsx li {
+				color: #ccc;
+			}
 
 		</style>
 
@@ -64,15 +70,17 @@
 				<section>
 				  <section>
 						<h1>What is JSX?</h1>
-						<p class="fragment">
-							It's an XML-like syntax to describe components.
-						</p>
-						<p class="fragment">
-							It is embedded into JavaScript code.
-						</p>
-						<p class="fragment">
-							It's syntactic sugar for React primitives.
-						</p>
+						<ul>
+							<li class="fragment">
+								It's an XML-like syntax to describe components.
+							</li>
+							<li class="fragment">
+								It is embedded into JavaScript code.
+							</li>
+							<li class="fragment">
+								It's syntactic sugar for React primitives.
+							</li>
+						</ul>
 					</section>
 
 					<section data-markdown>
@@ -91,7 +99,7 @@ var Avatar = React.createClass({
 });
 // Call to render a component
 ReactDOM.render(&lt;Avatar userid="claudiopro" /&gt;,
-  document.querySelector('#mount-point'));
+  attachPoint);
 ```
 					</section>
 
@@ -161,7 +169,7 @@ var HelloMessage = React.createClass({
 });
 
 ReactDOM.render(&lt;HelloMessage name="Dublin" /&gt;,
-	document.querySelector('#mount-point'));
+	attachPoint);
 ```
 					</section>
 
@@ -181,16 +189,18 @@ var HelloMessage = React.createClass({
 ReactDOM.render(React.createElement(HelloMessage, {
 		name: "Dublin"
 	}),
-	document.querySelector('#mount-point'));
+	attachPoint);
 ```
 					</section>
 				</section-->
 
-				<section data-markdown>
-					# Tools
-					- Babel
-					- Browserify
-					- Webpack
+				<section id="build-tools">
+					<h1>Build Tools</h1>
+					<ul>
+						<li class="fragment">Babel</li>
+						<li class="fragment">Browserify</li>
+						<li class="fragment">Webpack</li>
+					</ul>
 				</section>
 
 				<section id="babel" data-background="#f5da55">
@@ -287,23 +297,32 @@ babel --presets es2015,react src --watch --out-dir dist
 						<p>Try out JSX on the online <a href="https://babeljs.io/repl/" target="_blank">Babel REPL</a></p>
 					</section>
 
+					<section id="beyond-jsx" data-background="mediumvioletred" data-markdown data-transition="zoom">
+						# Beyond JSX
+						- Psst: `babel` can compile to _any_ Virtual DOM library e.g. Yolk, Riot, ...
+						- Use the `pragma` setting in `.babelrc`:
+```js
+{
+	"plugins": [["transform-react-jsx", { "pragma": "dom" }]]
+}
+```
+						- Outputs:
+```bash
+# script.js: &lt;Nav userid="claudiopro"/&gt;;
+babel script.js
+>> dom(Nav, { userid: "claudiopro" });
+```
+					</section>
+
 					<!--section>
 						<iframe class="stretch" src="https://babeljs.io/repl/"></iframe>
 					</section-->
 				</section>
 
-				<section id="build-tools">
-					<h1>Build Tools</h1>
-					<ul>
-						<li class="fragment">Browserify</li>
-						<li class="fragment">Webpack</li>
-					</ul>
-				</section>
-
 				<section id="browserify">
 					<section data-markdown>
 						# Browserify
-						- Runs node modules in the browser
+						- Compiles node modules to run in the browser
 						- Aggregates `CommonJS` modules
 						- Allows composible transforms, e.g. `brfs`, `amdify`
 						- Generates source maps (with `-d` option)
@@ -311,12 +330,15 @@ babel --presets es2015,react src --watch --out-dir dist
 
 					<section data-markdown>
 						# Babelify
-						- Browserify transform for Babel
+						- https://github.com/babel/babelify
+						- Babel transform for Browserify
 						- Requires plugins or presets
 					</section>
 
 					<section data-markdown>
 						# Babelify: CLI
+						- Pass `babelify` as value of the `-t` option
+						- Accepts [`subarg`'s](https://github.com/substack/subarg)
 ```bash
 browserify app.js -o bundle.js \
 	-t [ babelify --presets [ es2015 react ] ]
@@ -344,11 +366,14 @@ gulp.task('build', function() {
 					<section data-markdown>
 						# Reactify
 						- https://github.com/andreypopp/reactify
+						- React transform for Browserify
 						- Based on the deprecated `react-tools`
 					</section>
 
 					<section data-markdown>
 						# Reactify: CLI
+						- Pass `reactify` as value of the `-t` option
+						- Accepts [`subarg`'s](https://github.com/substack/subarg)
 ```bash
 browserify app.js -o bundle.js -t reactify
 ```
@@ -381,6 +406,7 @@ gulp.task('build', function() {
 						- Bundles not just JavaScript, but also CSS, HTML templates, images, fonts, ...
 						- Loaders trasform everything to JavaScript
 						- Extensible via plugins
+						- _Splits code in chunks loadable on demand_
 					</section>
 
 					<section data-markdown>
@@ -397,6 +423,31 @@ webpack app.js --watch
 						- Uses a different config file
 ```bash
 webpack app.js --config other.config.js
+```
+						- Accepts a gazillion command line options
+					</section>
+
+					<section data-markdown>
+						# Webpack: Config
+						- Controls entry points, chunks, loaders, plugins, ...
+						- Pure JS object, file must export it
+```js
+module.exports = {
+	entry: './app.js',
+	output: {
+		path: './dist',
+		filename: '[id].bundle.js'
+	},
+	module: {
+		loaders: [
+			{
+				test: /\.jsx?/,
+				exclude: /node_modules/,
+				loader: 'babel-loader'
+			}
+		]
+	}
+};
 ```
 					</section>
 
