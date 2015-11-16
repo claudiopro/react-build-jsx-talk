@@ -234,7 +234,7 @@ npm install babel-preset-react --save-dev
 					<section data-markdown>
 					# Babel transforms
 					- In browser transform
-					- Build
+					- CLI Build
 					- Self-service REPL
 					</section>
 
@@ -267,18 +267,18 @@ npm install -g babel-cli
 ```
 						- Compile a file `script.js` and write to `script-compiled.js`
 ```bash
-babel script.js --out-file script-compiled.js
+babel --presets es2015,react script.js --out-file script-compiled.js
 ```
 						- Watch an entire directory `src` for changes, and write to `dist`
 ```bash
-babel src --watch --out-dir dist
+babel --presets es2015,react src --watch --out-dir dist
 ```
 
 					</section>
 
 					<section>
-						<h1>Self service</h1>
-						<a href="https://babeljs.io/repl/" target="_blank">Babel REPL</a>
+						<h1>Self service REPL</h1>
+						Try out JSX on the online <a href="https://babeljs.io/repl/" target="_blank">Babel REPL</a>
 					</section>
 
 					<!--section>
@@ -286,36 +286,101 @@ babel src --watch --out-dir dist
 					</section-->
 				</section>
 
-				<section>
-					<h1>Tools</h1>
+				<section id="build-tools">
+					<h1>Build Tools</h1>
 					<ul>
-						<li class="fragment">Babel</li>
 						<li class="fragment">Browserify</li>
 						<li class="fragment">Webpack</li>
 					</ul>
 				</section>
 
-				<section>
-					<h1>Tools</h1>
-					<ul>
-						<li class="fragment">Babel</li>
-						<li class="fragment">Browserify</li>
-						<li class="fragment">Webpack</li>
-					</ul>
+				<section id="browserify">
+					<section data-markdown>
+						# Browserify
+						- Runs node modules in the browser
+						- Aggregates `CommonJS` modules
+						- Allows composible transforms, e.g. `brfs`, `amdify`
+						- Generates source maps (with `-d` option)
+					</section>
+
+					<section data-markdown>
+						# Babelify
+						- Browserify transform for Babel
+						- Requires plugins or presets
+					</section>
+
+					<section data-markdown>
+						# Babelify: Shell
+```bash
+browserify app.js -o bundle.js \
+	-t [ babelify --presets [ es2015 react ] ]
+```
+					</section>
+
+					<section data-markdown>
+						# Babelify: Gulp
+```js
+var gulp       = require('gulp'),
+    browserify = require('browserify'),
+    babelify   = require('babelify'),
+    source     = require('vinyl-source-stream');
+
+gulp.task('build', function() {
+	browserify('./app.js')
+		.transform(babelify, {presets: ['es2015', 'react']})
+		.bundle()
+		.pipe(source('main.js'))
+		.pipe(gulp.dest('./dist'));
+});
+```
+					</section>
+
+					<section data-markdown>
+						# Reactify
+						- https://github.com/andreypopp/reactify
+						- Based on the deprecated `react-tools`
+					</section>
+
+					<section data-markdown>
+						# Reactify: Shell
+```bash
+browserify app.js -o bundle.js -t reactify
+```
+					</section>
+
+					<section data-markdown>
+						# Reactify: Gulp
+```js
+var gulp       = require('gulp'),
+    browserify = require('browserify'),
+    reactify   = require('reactify'),
+    source     = require('vinyl-source-stream');
+
+gulp.task('build', function() {
+	browserify('./app.js')
+		.transform(reactify)
+		.bundle()
+		.pipe(source('main.js'))
+		.pipe(gulp.dest('./dist'));
+});
+```
+					</section>
+				</section>
+
+				<section id="deprecated" data-markdown>
+					# Deprecated
+					- JSXTransformer.js - Legacy script for in-browser transform, transforms and run scripts with type `text/jsx`
+					- [`react-tools`](https://www.npmjs.com/package/react-tools) - A set of complementary tools to React, including the `jsx` transformer
+					- [`jstransform`](https://github.com/facebook/jstransform) - A simple utility for pluggable JS syntax transforms using the Esprima parser
 				</section>
 
 				<section data-markdown>
-				 # Watch files
-```bash
-#!/bin/bash
-npm install babel-preset-es2015 babel-preset-react --save-dev
-babel --presets es2015,react --watch src/ --out-dir lib/
-```
 				</section>
 
 				<!-- Wrap up -->
-				<section data-markdown>
+				<section id="thanks" data-markdown>
 					# Thank you!
+					Claudio Procida [@claudiopro](https://github.com/claudiopro)
 				</section>
 			</div>
 
