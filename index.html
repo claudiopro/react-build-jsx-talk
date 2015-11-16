@@ -49,7 +49,7 @@
 			<div class="slides">
 				<section data-markdown>
 					# Building React
-					## Intro to building JSX with browserify and webpack
+					## Intro to JSX build with browserify and webpack
 					Claudio Procida [@claudiopro](https://github.com/claudiopro)
 				</section>
 
@@ -98,42 +98,47 @@ ReactDOM.render(&lt;Avatar userid="claudiopro" /&gt;,
 				</section>
 
 				<section>
-					<section data-markdown>
-						# Simple transform
+					<section>
+						<h1>Simple transform</h1>
 
-						React JSX transforms from an XML-like syntax into native JavaScript.
-						XML elements, attributes and children are transformed into arguments that are passed to `React.createElement`.
-```js
+						<p>React JSX transforms from XML-like syntax into JavaScript.
+						XML elements, attributes and children are transformed into arguments
+						passed to <code>React.createElement</code>.</p>
+<pre><code lang="js">
 var Avatar = require('./Avatar');
+
 // Input (JSX):
 var app = &lt;Avatar userid="claudiopro" /&gt;;
+</code></pre>
+<pre class="fragment"><code lang="js">
 // Output (JS):
 var app = React.createElement(Avatar, {
 	userid : "claudiopro"
 });
-```
+</code></pre>
 					</section>
 
-					<section data-markdown>
-						# Nested transform
+					<section>
+						<h1>Nested transform</h1>
 
-						JSX also allows specifying children using XML syntax:
+						<p>JSX also allows specifying children using XML syntax:</p>
 
-```js
+<pre><code lang="js">
 var Avatar = require('./Avatar'),
        Nav = require('./Nav');
+
 // Input (JSX):
 var app = &lt;Nav&gt;&lt;Avatar userid="claudiopro"/&gt;&lt;/Nav&gt;;
+</code></pre>
+<pre class="fragment"><code lang="js">
 // Output (JS):
-var app = React.createElement(
-	Nav,
-  null,
-  React.createElement(Avatar, {
+var app = React.createElement(Nav,
+	null,
+	React.createElement(Avatar, {
 		userid : "claudiopro"
 	})
 );
-
-```
+</code></pre>
 					</section>
 				</section>
 
@@ -174,26 +179,101 @@ ReactDOM.render(React.createElement(HelloMessage, {
 				</section>
 
 				<section data-markdown>
-					# Transforms
-					- In browser transform
-					- Compilation
+					# Tools
+					- [Babel](https://babeljs.io)
+					- Browserify
+					- Webpack
+				</section>
+
+				<section id="babel">
+					<section data-markdown>
+						# Babel
+						- A JavaScript compiler.
+						- Built out of composable plugins to create your own transformation pipeline.
+						- Ships with built-in support for JSX.
+					</section>
+
+					<section data-markdown>
+						# Babel plugins
+						- Syntax parsers for new or experimental syntax e.g. Object rest/spread operators
+						- Transforms e.g. ES6 modules to RequireJS or AMD
+						- Miscellaneous e.g. undeclared variable check
+					</section>
+
+					<section data-markdown>
+						# Babel presets
+						Groups of plugins for common build profiles e.g.
+						- React
+						- ES6
+						- Experimental stage 0, 1, 2, 3
+					</section>
+
+					<section data-markdown>
+						# Babel config file
+						- A `.babelrc` file at top level in your project
+						- Supports all flags accepted by the `babel` binary
+					</section>
+
+					<section data-markdown>
+						# Getting started
+						- Install Babel and React preset to your project
+```bash
+npm install babel -g
+npm install babel-preset-react --save-dev
+```
+						- Configure `.babelrc`
+```js
+{
+	"presets": ["react"]
+}
+```
+					</section>
 				</section>
 
 				<section>
-					<section>
-						<h1>In browser transform</h1>
-						<ul>
-							<li class="fragment"><span class="s">JSXTransformer</span></li>
-							<li class="fragment">text/babel</li>
-						</ul>
+					<section data-markdown>
+					# Babel transforms
+					- In browser transform
+					- Build
+					- Self-service REPL
 					</section>
 
-					<section>
-						<h1>In browser transform</h1>
-						<ul>
-							<li class="fragment"><span class="s">JSXTransformer</span></li>
-							<li class="fragment">text/babel</li>
-						</ul>
+					<section data-markdown>
+						# In browser transform
+						- _Not for production use!_
+						- Use `browser.js` version that can run in a browser
+						- Available as `babel-browser` npm module, or from a CDN
+						- Transforms and runs scripts with type `text/ecmascript-6` and `text/babel`:
+
+```html
+&lt;script src="node_modules/babel-browser/browser.js"&gt;&lt;/script&gt;
+&lt;script type="text/babel"&gt;
+class Test {
+  test() {
+    return "test";
+  }
+}
+
+new Test().test(); // "test"
+&lt;/script&gt;
+```
+					</section>
+
+					<section data-markdown>
+						# Build: CLI
+						- Install the CLI tool
+```bash
+npm install -g babel-cli
+```
+						- Compile a file `script.js` and write to `script-compiled.js`
+```bash
+babel script.js --out-file script-compiled.js
+```
+						- Watch an entire directory `src` for changes, and write to `dist`
+```bash
+babel src --watch --out-dir dist
+```
+
 					</section>
 
 					<section>
