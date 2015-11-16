@@ -72,13 +72,13 @@
 						<h1>What is JSX?</h1>
 						<ul>
 							<li class="fragment">
-								It's an XML-like syntax to describe components.
+								It's an XML-like syntax to describe components
 							</li>
 							<li class="fragment">
-								It is embedded into JavaScript code.
+								It is embedded into JavaScript code
 							</li>
 							<li class="fragment">
-								It's syntactic sugar for React primitives.
+								It's syntactic sugar for React primitives
 							</li>
 						</ul>
 					</section>
@@ -236,7 +236,9 @@ ReactDOM.render(React.createElement(HelloMessage, {
 						# Getting started
 						- Install Babel and React preset to your project
 ```bash
-npm install babel -g
+# Install with npm
+npm install babel-cli -g
+# Install the react preset and save to package.json
 npm install babel-preset-react --save-dev
 ```
 						- Configure `.babelrc`
@@ -277,17 +279,15 @@ new Test().test(); // "test"
 
 					<section data-markdown>
 						# CLI Build
-						- Install the CLI tool
 ```bash
-npm install -g babel-cli
-```
-						- Compile a file `script.js` and write to `script-compiled.js`
-```bash
-babel --presets es2015,react script.js --out-file script-compiled.js
-```
-						- Watch an entire directory `src` for changes, and write to `dist`
-```bash
-babel --presets es2015,react src --watch --out-dir dist
+# Compile a file script.js and write to script-compiled.js
+babel script.js --out-file script-compiled.js
+# Watch an entire directory src for changes, and write to dist
+babel src --watch --out-dir dist
+# Uses the transform-react-jsx plugin
+babel --plugins transform-react-jsx script.js
+# Uses the react and es2015 presets
+babel --presets es2015,react script.js
 ```
 
 					</section>
@@ -306,11 +306,12 @@ babel --presets es2015,react src --watch --out-dir dist
 	"plugins": [["transform-react-jsx", { "pragma": "dom" }]]
 }
 ```
-						- Outputs:
+						- Compiles to the desired library:
 ```bash
 # script.js: &lt;Nav userid="claudiopro"/&gt;;
 babel script.js
->> dom(Nav, { userid: "claudiopro" });
+# Outputs:
+dom(Nav, { userid: "claudiopro" });
 ```
 					</section>
 
@@ -411,20 +412,16 @@ gulp.task('build', function() {
 
 					<section data-markdown>
 						# Webpack: CLI
-						- Install with `npm`:
+						- Accepts several command line options
 ```bash
+# Install with npm:
 npm install -g webpack
-```
-
-						- Uses the default `webpack.config.js` (if exists) and watches files:
-```bash
+# Use the default webpack.config.js
+# if exists, and watches files:
 webpack app.js --watch
-```
-						- Uses a different config file
-```bash
+# Uses a different config file:
 webpack app.js --config other.config.js
 ```
-						- Accepts a gazillion command line options
 					</section>
 
 					<section data-markdown>
