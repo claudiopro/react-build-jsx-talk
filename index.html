@@ -61,10 +61,15 @@
 
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section data-markdown>
+				<section data-markdown data-separator-notes="^Note:">
 					# Building React
 					## Intro to JSX build with Browserify and Webpack
 					Claudio Procida [@claudiopro](https://github.com/claudiopro)
+
+					Note:
+
+					Nice to meet you, I'm going to cover a few basic concepts related to building React,
+					and popular build tools that are used in conjunction with JSX
 				</section>
 
 				<section>
@@ -81,9 +86,15 @@
 								It's syntactic sugar for React primitives
 							</li>
 						</ul>
+
+						<aside class="notes">
+							When Pete Hunt announced React at JSConf.EU 2013, the audience was probably already in a state of shock
+							for the announcement that the framework re-renders everything when state or properties change, to understand
+							the implications of embedding presentation in the JS module.
+						</aside>
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# JSX at a glance
 ```js
 // Declaration of a class
@@ -101,15 +112,24 @@ var Avatar = React.createClass({
 ReactDOM.render(&lt;Avatar userid="claudiopro" /&gt;,
   attachPoint);
 ```
+						Note:
+
+						In a nutshell, this is you'll see React used most of the time. JSX elements are interleaved with code,
+						mostly in the render() method and in the call to ReactDOM.render() -- previously React.render()
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Gotchas
 
 						- React has a whitelist for HTML element names and attributes. If you pass elements or attribute names
 						that are not in the list, React will not render them
 						- You can pass JavaScript strings as content or attribute values. Note that React performs escaping
 						on dynamic content
+
+						Note:
+
+						Attributes must be valid JS. For this reason, React uses `className` instead of `class`, and styles are literal
+						objects whose keys are the JS property names of the `style` object e.g. `backgroundColor`.
 					</section>
 				</section>
 
@@ -155,11 +175,15 @@ var app = React.createElement(Nav,
 	})
 );
 </code></pre>
+
+						<aside class="notes">
+
+						</aside>
 					</section>
 				</section>
 
 				<!--section>
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Rendering on screen
 ```js
 var HelloMessage = React.createClass({
@@ -173,7 +197,7 @@ ReactDOM.render(&lt;HelloMessage name="Dublin" /&gt;,
 ```
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 ```js
 var HelloMessage = React.createClass({
   render: function() {
@@ -201,24 +225,41 @@ ReactDOM.render(React.createElement(HelloMessage, {
 						<li class="fragment">Browserify</li>
 						<li class="fragment">Webpack</li>
 					</ul>
+
+					<aside class="notes">
+					</aside>
 				</section>
 
 				<section id="babel" data-background="#f5da55">
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Babel
 						- A JavaScript compiler
 						- Built out of composable plugins to create your own transformation pipeline
 						- Ships with built-in support for JSX
+
+						Note:
+
+						Babel, formerly 6to5, is a powerful, extensible JavaScript compiler built out of plugins. You can compose
+						your own transformation pipeline using existing plugins or write your own. Plugins are easily handled
+						through presets: similarly to plugins, you can use existing presets or write your own.
+
+						Babel has support for the latest version of JavaScript through syntax transformers. These allow you to use
+						new syntax, right now without waiting for browser support. This helps test upcoming or experimental language
+						syntax and shape the future of the language.
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Babel plugins
 						- Syntax parsers for new or experimental syntax e.g. Object rest/spread operators
 						- Transforms e.g. ES6 modules to RequireJS or AMD
 						- Miscellaneous e.g. undeclared variable check
+
+						Note:
+
+						...
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Babel presets
 						Groups of plugins for common build profiles e.g.
 						- React
@@ -226,13 +267,20 @@ ReactDOM.render(React.createElement(HelloMessage, {
 						- Experimental syntax, grouped by stage
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Babel config file
 						- A `.babelrc` file at top level in your project
 						- Supports all flags accepted by the `babel` binary
+
+						Note:
+
+						The `.babelrc` file is a JSON file that contains settings for babel, plugins and presets.
+
+						The `.babelrc` is honored by babel when run in a directory that contains one.
+						Mind that some options can be overridden via commandline arguments.
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Getting started
 						- Install Babel and React preset to your project
 ```bash
@@ -247,16 +295,20 @@ npm install babel-preset-react --save-dev
 	"presets": ["react"]
 }
 ```
+						Note:
+
+						You may also want to install the babel-preset-es2015 if you want to use es6 syntax in your React components.
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 					# Babel transforms
 					- In browser transform
 					- CLI Build
+					- `babel-node`
 					- Self-service REPL
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# In browser transform
 						- _Not for production use!_
 						- Use `browser.js` version that can run in a browser
@@ -277,7 +329,7 @@ new Test().test(); // "test"
 ```
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# CLI Build
 ```bash
 # Compile a file script.js and write to script-compiled.js
@@ -289,12 +341,36 @@ babel --plugins transform-react-jsx script.js
 # Uses the react and es2015 presets
 babel --presets es2015,react script.js
 ```
+Note:
 
+Babel can be used as a command line tool directly or in your Makefiles and shell scripts, on a single file or an entire directory.
+
+You can override options defined in the .babelrc file via command line flags.
+
+Additionally, babel can be launched in watch mode to perform a compilation every time files change.
+					</section>
+
+					<section data-markdown>
+						# `babel-node`
+
+						- Comes with `babel-cli`
+						- _Do not use in production: very heavy because it stores the cache in memory_
+						- Compiles code on the fly before executing with `node`
+
+						Note:
+
+						babel-node should only be used to test programs that require babel. Always compile before distributing, and
+						run with vanilla `node`.
 					</section>
 
 					<section>
 						<h1>Self service REPL</h1>
 						<p>Try out JSX on the online <a href="https://babeljs.io/repl/" target="_blank">Babel REPL</a></p>
+
+						<aside class="notes">
+							The self service Read-Eval-Print-Loop console allows to try out babel without installing e.g. if you
+							can't install node or npm on a machine.
+						</aside>
 					</section>
 
 					<section id="beyond-jsx" data-background="mediumvioletred" data-markdown data-transition="zoom">
@@ -321,22 +397,33 @@ dom(Nav, { userid: "claudiopro" });
 				</section>
 
 				<section id="browserify">
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Browserify
 						- Compiles node modules to run in the browser
 						- Aggregates `CommonJS` modules
 						- Allows composible transforms, e.g. `brfs`, `amdify`
 						- Generates source maps (with `-d` option)
+
+						Note:
+
+						Browserify is a clever hack by James Halliday "substack" to bundle node modules for use in the browser.
+						It's based on a small overhead that is added to the modules and additional composible transforms, e.g. brfs
+						for fs operations, and amdify for requirejs compatibility.
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Babelify
 						- https://github.com/babel/babelify
 						- Babel transform for Browserify
 						- Requires plugins or presets
+
+						Note:
+
+						Babelify is a browserify transform that applies babel to the code before it's aggregated. Similarly to babel,
+						it requires plugins or presets.
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Babelify: CLI
 						- Pass `babelify` as value of the `-t` option
 						- Accepts [`subarg`'s](https://github.com/substack/subarg)
@@ -346,7 +433,7 @@ browserify app.js -o bundle.js \
 ```
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Babelify: Gulp
 ```js
 var gulp       = require('gulp'),
@@ -364,14 +451,19 @@ gulp.task('build', function() {
 ```
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Reactify
 						- https://github.com/andreypopp/reactify
 						- React transform for Browserify
 						- Based on the deprecated `react-tools`
+
+						Note:
+
+						Before babelify, reactify was used in concert with browserify to compile JSX reusing the react-tools utilities.
+						Now that babel is the main supported compiler for JSX this is probably going to be phased out.
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Reactify: CLI
 						- Pass `reactify` as value of the `-t` option
 						- Accepts [`subarg`'s](https://github.com/substack/subarg)
@@ -380,7 +472,7 @@ browserify app.js -o bundle.js -t reactify
 ```
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Reactify: Gulp
 ```js
 var gulp       = require('gulp'),
@@ -400,7 +492,7 @@ gulp.task('build', function() {
 				</section>
 
 				<section id="webpack" data-background="#eee">
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Webpack
 						- Extensible module bundler
 						- Works with AMD, CommonJS, ES6 modules, etc.
@@ -410,7 +502,7 @@ gulp.task('build', function() {
 						- _Splits code in chunks loadable on demand_
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Webpack: CLI
 						- Accepts several command line options
 ```bash
@@ -424,7 +516,7 @@ webpack app.js --config other.config.js
 ```
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Webpack: Config
 						- Controls entry points, chunks, loaders, plugins, ...
 						- Pure JS object, file must export it
@@ -446,9 +538,14 @@ module.exports = {
 	}
 };
 ```
+						Note:
+
+						The config object is a pure JS object exported by the config.js. This is the file that controls how webpack
+						processes your project. A project can have multiple config files.
+
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Webpack: Gulp
 						The short way:
 ```js
@@ -471,7 +568,7 @@ gulp.task('build', function(callback) {
 ```
 					</section>
 
-					<section data-markdown>
+					<section data-markdown data-separator-notes="^Note:">
 						# Webpack: Gulp
 						The long way:
 ```js
@@ -496,21 +593,21 @@ gulp.task('build', function(callback) {
 					</section>
 				</section>
 
-				<section id="deprecated" data-markdown>
+				<section id="deprecated" data-markdown data-separator-notes="^Note:">
 					# Deprecated
 					- JSXTransformer.js - Legacy script for in-browser transform, transforms and run scripts with type `text/jsx`
 					- [`react-tools`](https://www.npmjs.com/package/react-tools) - A set of complementary tools to React, including the `jsx` transformer
 					- [`jstransform`](https://github.com/facebook/jstransform) - A simple utility for pluggable JS syntax transforms using the Esprima parser
 				</section>
 
-				<section data-markdown>
+				<section data-markdown data-separator-notes="^Note:">
 					# Further reading
 					- Babel blog - http://babeljs.io/blog/
 					- React blog - http://facebook.github.io/react/blog/
 				</section>
 
 				<!-- Wrap up -->
-				<section id="thanks" data-markdown>
+				<section id="thanks" data-markdown data-separator-notes="^Note:">
 					# Thank you!
 					Claudio Procida [@claudiopro](https://github.com/claudiopro)
 				</section>
